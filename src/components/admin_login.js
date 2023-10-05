@@ -1,21 +1,45 @@
-import React from 'react';
+import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function Adminlogin() {
+    const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+
+  const Alogin = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:3001/adminlogin', { email, password });
+      if (response.status === 200) {
+        // Redirect to another page upon successful login
+        navigate('/admindashboard');
+      } else {
+        // Handle login failure
+        console.error('adminLogin failed');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+    }
+  };
   
     return (
         <div>
-            <h2>Admin login</h2>
-            <form>
-            <label>
-                Email:<br />
-                <input type="email" />
-            </label><br />
-            <label>
-                Password:<br />
-                <input type="password" />
-            </label><br />
-            </form>
-        </div>
+      <h2>Admin Login</h2>
+      <form onSubmit={Alogin}>
+        <label>
+          Email:<br />
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        </label>
+        <br />
+        <label>
+          Password:<br />
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        </label>
+        <br />
+        <button type="submit">Login</button>
+      </form>
+    </div>
     );
 }
 export default Adminlogin

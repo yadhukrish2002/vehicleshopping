@@ -1,46 +1,76 @@
 // src/components/LoginForm.js
 import React, { useState } from 'react';
 import axios from 'axios';
-
+import { useNavigate } from 'react-router-dom';
 
 function LoginForm() {
-    const [isLogin, setIsLogin] = useState(true);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+
+  const tosignup = () => {
+    navigate('/usersignup');
+  };
+
+  const login = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post('http://localhost:3001/login', { email, password });
+      if (response.status === 200) {
+        // Redirect to another page upon successful login
+        navigate('/userdashboard');
+      } else {
+        // Handle login failure
+        console.error('Login failed');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+    }
+  };
+
+  return (
+    <div>
+      <h2>User Login</h2>
+      <form onSubmit={login}>
+        <label>
+          Email:<br />
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+        </label>
+        <br />
+        <label>
+          Password:<br />
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        </label>
+        <br />
+        <button type="submit">Login</button>
+      </form>
+      <p>
+        Don't have an account?
+        <button type="button" onClick={tosignup}>
+          Signup
+        </button>
+      </p>
+    </div>
+  );
+}
+
+
+function SignupForm() {
     const [name,setName]=useState('');
     const [email,setEmail]=useState('');
     const [password,setPassword]=useState('');
     const [cPassword,setCPassword]=useState('');
     const [city,setCity]=useState('');
     const [state,setState]=useState('');
-    const [country,setCountry]=useState('');
+    const [country,setCountry]=useState('india');
     const [pinCode,setPincode]=useState('');
     const [phoneNumber, setPhoneNumber] = useState('+91');
     const [verificationCode, setVerificationCode] = useState('');
     const [verificationStatus, setVerificationStatus] = useState('');
     const [isPhoneOTPVisible, setIsPhoneOTPVisible] = useState(false);
-
-    const verify=()=>{
-      if(isLogin){
-        login()
-      }
-      else{
-        signup()
-      }
-    }
-
-    const login=()=>{
-      // Send a POST request to the server to login
-      axios
-        .post('http://localhost:3001/login', {email,password})
-        .then((response) => {
-          if (response.data.success) {
-            
-          } else {
-            
-          }
-        })
-        .catch((error) => {
-          console.error('login error:', error);
-        });
+    const navigate = useNavigate();
+    const tologin=()=>{
+      navigate('/userlogin');
     }
     const signup=()=>{
       // Send a POST request to the server to signup
@@ -48,9 +78,8 @@ function LoginForm() {
         .post('http://localhost:3001/signup', {name,email,password,cPassword,city,state,country,pinCode,phoneNumber})
         .then((response) => {
           if (response.data.success) {
-            
+            navigate('/userdashboard');
           } else {
-            
           }
         })
         .catch((error) => {
@@ -76,45 +105,37 @@ function LoginForm() {
         setIsPhoneOTPVisible(true);
     };
   
-    const verifyPhoneNumber = () => {
-      // Send a POST request to the server to verify the phone number using Twilio
-      axios
-        .post('http://localhost:3001/verify-phone-number', { phoneNumber, verificationCode })
-        .then((response) => {
-          if (response.data.success) {
-            //setphoneGV(true);
-            setVerificationStatus('Phone number verified! You are now authenticated.');
-          } else {
-            setVerificationStatus('Invalid verification code. Please try again.');
-          }
-        })
-        .catch((error) => {
-          console.error('Error verifying phone number:', error);
-          setVerificationStatus('Error verifying phone number.');
-        });
-    };
+    const verifyPhoneNumber = (e) => {
+      e.preventDefault(); // Prevent the default button behavior
 
-    const toggleForm = () => {
-      setIsLogin(!isLogin);
+  // Send a POST request to the server to verify the phone number using Twilio
+  axios
+    .post('http://localhost:3001/verify-phone-number', { phoneNumber, verificationCode })
+    .then((response) => {
+      if (response.data.success) {
+        //setphoneGV(true);
+        setVerificationStatus('Phone number verified! You are now authenticated.');
+      } else {
+        setVerificationStatus('Invalid verification code. Please try again.');
+      }
+    })
+    .catch((error) => {
+      console.error('Error verifying phone number:', error);
+      setVerificationStatus('Error verifying phone number.');
+    });
     };
-  
     return (
       <div>
-        <h2>{isLogin ? 'Login' : 'Sign Up'}</h2>
+        <h2>User Sign Up</h2>
         <form>
-          {/* Common form elements like username, password, etc. */}
           <label>
             Email:<br /><input type="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
           </label><br />
           <label>
             Password:<br /><input type="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
           </label><br />
-  
-          {/* Render additional sign-up fields if it's a sign-up form */}
-          {!isLogin && (
-            <>
-              <label>
-              Confirm Password:<br /><input type="password" value={cPassword} onChange={(e) => setCPassword(e.target.value)}/>
+          <label>
+            Confirm Password:<br /><input type="password" value={cPassword} onChange={(e) => setCPassword(e.target.value)}/>
               </label><br />
               <label>
               Name:<br /><input type="text" value={name} onChange={(e) => setName(e.target.value)}/>
@@ -146,22 +167,14 @@ function LoginForm() {
         <div>
           <p>{verificationStatus}</p>
         </div>
-            </>
-          )}
-  
-          <button type="submit" onClick={verify}>{isLogin ? 'Login' : 'Sign Up'}</button>
+          <button type="submit" onClick={signup}>Sign Up</button>
         </form>
-  
         <p>
-          {isLogin ? "Don't have an account? " : "Already have an account? "}
-          <button type="button" onClick={toggleForm}>
-            {isLogin ? 'Sign Up' : 'Login'}
-          </button>
+          Already have an account?<button type="button" onClick={tologin}>Login</button>
         </p>
       </div>
     );
 }
 
-export default LoginForm;
-
+export { LoginForm, SignupForm };
 

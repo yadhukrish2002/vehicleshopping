@@ -2,6 +2,7 @@ const express=require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 var mongoose=require('mongoose');
+
 const otp=require('./phoneotp')
 const app = express();
 const port = process.env.PORT || 3001;
@@ -31,24 +32,20 @@ const UserSchema = new mongoose.Schema({
   email:{ type: String, required: true, unique: true },
   password: { type: String, required: true },
   name: { type: String, required: true },
-  city: { type: String, required: true },
-  state: { type: String, required: true },
+  city: { type: String, required: false },
+  state: { type: String, required: false },
   country: { type: String, required: true },
-  pincode: { type: Number, required: true },
+  pincode: { type: Number, required: false },
   phoneno: { type: Number, required: true },
 });
-// Create a User schema and model
-const AdminSchema = new mongoose.Schema({
-    email:{ type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  });
 //access collection from the database
 const User = mongoose.model('users', UserSchema);
-const admin = mongoose.model('Admin', UserSchema);
+
 
 
 // Phone verification
 // Send a verification code to the provided phone number
+const verificationCodes = new Map();
 app.post('/send-verification-code', (req, res) => {
   const { phoneNumber } = req.body;
   if (!phoneNumber) {
@@ -76,8 +73,48 @@ app.post('/verify-phone-number', (req, res) => {
   res.json({ success: true, message: 'Phone number verified' });
 });
 
+//api for Admin login
+app.post('/adminlogin', async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    // Check if the provided password matches the stored password (plaintext comparison)
+    if (password === "admin" && email==="admin@gmail.com") {
+      // Passwords match; you can consider the user authenticated
+      res.status(200).json({ message: 'Admin login successful' });
+    } else {
+      // Passwords don't match; return an error
+      res.status(401).json({ message: 'Invalid credentials' });
+    }
+  } catch (error) {
+    console.error('Error during sign-in:', error);
+    res.status(500).json({ message: 'Sign-in failed' });
+  }
+});
 
-// Send a verification code to the provided phone number
+//api for user login
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    // Find the user by email
+    const user = await User.findOne({ email });
+    // If the user doesn't exist, return an error
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+    // Check if the provided password matches the stored password (plaintext comparison)
+    if (password === user.password) {
+      // Passwords match; you can consider the user authenticated
+      res.status(200).json({ message: 'User login successful' });
+    } else {
+      // Passwords don't match; return an error
+      res.status(401).json({ message: 'Invalid credentials' });
+    }
+  } catch (error) {
+    console.error('Error during sign-in:', error);
+    res.status(500).json({ message: 'Sign-in failed' });
+  }
+});
+// api for signup
 app.post('/signup', async (req, res) => {
   const { name, email, password, cPassword, city, state, country, pinCode, phoneNumber } = req.body;
   // Check if any required field is missing
@@ -90,7 +127,7 @@ app.post('/signup', async (req, res) => {
   }
   try {
     // Create a new user object
-    const newUser = new User({name,email,password,city,state,country,pinCode,phoneNumber,});
+    const newUser = new User({name:name,email:email,password:password,city:city,state:state,country:country,pincode:pinCode,pphoneNumber,});
     // Save the user to the database
     await newUser.save();
     res.json({ success: true, message: 'User registered successfully' });

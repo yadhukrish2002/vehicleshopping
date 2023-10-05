@@ -1,6 +1,8 @@
-// Twilio credentials (replace with your own)
+// Twilio credentials 
+const twilio = require('twilio');
+
 const twilioAccountSid = 'AC5b19ae981bc7cd944f04f7492275008c';
-const twilioAuthToken = 'e6ad5e877302143825a246decfc35a0c';
+const twilioAuthToken = 'b58f0c6749fabda66c8ea9b8b7963189';
 const twilioPhoneNumber = '+12564484928';
 
 const client = twilio(twilioAccountSid, twilioAuthToken);
