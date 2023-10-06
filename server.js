@@ -2,7 +2,8 @@ const express=require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 var mongoose=require('mongoose');
-
+const multer = require('multer');
+const path = require('path');
 const otp=require('./phoneotp')
 const app = express();
 const port = process.env.PORT || 3001;
@@ -37,9 +38,62 @@ const UserSchema = new mongoose.Schema({
   country: { type: String, required: true },
   pincode: { type: Number, required: false },
   phoneno: { type: Number, required: true },
-});
+}); 
+const VehicleSchema =new mongoose.Schema({
+  name: String,
+  description: String,
+  image: String,
+  noofvehicle: Number,
+})
 //access collection from the database
 const User = mongoose.model('users', UserSchema);
+const Vehicle=mongoose.model('vehicles',VehicleSchema);
+
+// Set up storage for image uploads using Multer
+const storage = multer.diskStorage({
+  destination: './uploads/',
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+  },
+});
+const upload = multer({
+  storage: storage,
+});
+// Add a new vehicle to the database
+app.post('/addvehicle', upload.single('vimage'), async (req, res) => {
+  try {
+    const { vname, vdescription, noofvehicle } = req.body;
+
+    // Construct the image path on your server
+    const vimagePath = req.file ? req.file.path : '';
+
+    // Create a new vehicle object
+    const newVehicle = new Vehicle({
+      name: vname,
+      description: vdescription,
+      image: vimagePath,
+      noofvehicle: noofvehicle,
+    });
+
+    // Save the new vehicle to the database
+    await newVehicle.save();
+
+    res.status(200).json({ message: 'Vehicle added successfully' });
+  } catch (error) {
+    console.error('Error adding vehicle:', error);
+    res.status(500).json({ message: 'Error adding vehicle' });
+  }
+});
+// Fetch all vehicles from the database
+app.get('/vehicles', async (req, res) => {
+  try {
+    const vehicles = await Vehicle.find();
+    res.status(200).json(vehicles);
+  } catch (error) {
+    console.error('Error fetching vehicles:', error);
+    res.status(500).json({ message: 'Error fetching vehicles' });
+  }
+});
 
 
 

@@ -4,6 +4,8 @@ import Home from "./home";
 import { LoginForm, SignupForm } from "./user_form";
 import Adminlogin from "./admin_login";
 import UserDashBoard from "./userdashboard";
+import AdminDashBoard from "./admindashboard";
+import AddVehicle from "./addvehicle";
 
 function Main() {
   return (
@@ -14,6 +16,8 @@ function Main() {
         <Route path="/usersignup" element={<SignupForm />} />
         <Route path="/adminlogin" element={<Adminlogin />} />
         <Route path="/userdashboard" element={<UserDashBoard />} />
+        <Route path="/admindashboard" element={<AdminDashBoard />} />
+        <Route path="/addvehicle" element={<AddVehicle />} />
       </Routes>
     </Router>
   );
