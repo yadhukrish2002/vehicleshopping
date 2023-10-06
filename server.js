@@ -94,6 +94,44 @@ app.get('/vehicles', async (req, res) => {
     res.status(500).json({ message: 'Error fetching vehicles' });
   }
 });
+// Delete a vehicle by ID
+app.delete('/deletevehicle/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    await Vehicle.findByIdAndDelete(id);
+    res.status(204).send();
+  } catch (error) {
+    console.error('Error deleting vehicle:', error);
+    res.status(500).json({ message: 'Error deleting vehicle' });
+  }
+});
+// Update a vehicle by ID
+app.put('/updatevehicle/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, description, noofvehicle } = req.body;
+
+    // Find the vehicle by ID in the database
+    const vehicle = await Vehicle.findById(id);
+
+    if (!vehicle) {
+      return res.status(404).json({ message: 'Vehicle not found' });
+    }
+
+    // Update the vehicle properties
+    vehicle.name = name;
+    vehicle.description = description;
+    vehicle.noofvehicle = noofvehicle;
+
+    // Save the updated vehicle to the database
+    await vehicle.save();
+
+    res.status(200).json({ message: 'Vehicle updated successfully' });
+  } catch (error) {
+    console.error('Error updating vehicle:', error);
+    res.status(500).json({ message: 'Error updating vehicle' });
+  }
+});
 
 
 

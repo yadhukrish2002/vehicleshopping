@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-
+import UpdateVehicle from './Updatevehicle';
 function VehicleList() {
   const [vehicles, setVehicles] = useState([]);
+  const [selectedVehicle, setSelectedVehicle] = useState(null);
 
   useEffect(() => {
     // Fetch vehicles from the backend when the component mounts
@@ -14,11 +15,28 @@ function VehicleList() {
         console.error('Error fetching vehicles:', error);
       });
   }, []);
+  const deleteVehicle = (id) => {
+    // Make an API call to delete the vehicle by ID
+    fetch(`http://localhost:3001/deletevehicle/${id}`, {
+      method: 'DELETE',
+    })
+      .then(() => {
+        // Remove the deleted vehicle from the state
+        setVehicles((prevVehicles) => prevVehicles.filter((vehicle) => vehicle._id !== id));
+      })
+      .catch((error) => {
+        console.error('Error deleting vehicle:', error);
+      });
+  };
+  const updateVehicle = (vehicle) => {
+    // Set the selected vehicle for updating
+    setSelectedVehicle(vehicle);
+  };
 
   return (
     <div>
       <h3>Vehicle List</h3>
-      <table>
+      <table border='1'>
         <thead>
           <tr>
             <th>Name</th>
@@ -34,14 +52,28 @@ function VehicleList() {
               <td>{vehicle.description}</td>
               <td>
                 {vehicle.image && (
-                  <img src={`http://localhost:3001/${vehicle.image}`} alt={vehicle.name} width="100" />
+                  <img src={`http://localhost:3001/${vehicle.image}`} 
+                  alt={`${vehicle.name}`}
+                  style={{ maxWidth: '100px' }} />
                 )}
               </td>
               <td>{vehicle.noofvehicle}</td>
+              <td>
+                <button onClick={() => deleteVehicle(vehicle._id)}>Delete</button>
+              </td>
+              <td>
+              <button onClick={() => updateVehicle(vehicle)}>Update</button>
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
+      {selectedVehicle && (
+        <UpdateVehicle
+          vehicle={selectedVehicle}
+          onClose={() => setSelectedVehicle(null)}
+        />
+      )}
     </div>
   );
 }
