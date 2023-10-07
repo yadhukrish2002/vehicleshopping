@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loginstatus,setLoginStatus]=useState('');
   const navigate = useNavigate();
 
   const tosignup = () => {
@@ -21,6 +22,7 @@ function LoginForm() {
         navigate('/userdashboard');
       } else {
         // Handle login failure
+        setLoginStatus('login failed');
         console.error('Login failed');
       }
     } catch (error) {
@@ -44,6 +46,7 @@ function LoginForm() {
         <br />
         <button type="submit">Login</button>
       </form>
+      <p>{loginstatus}</p>
       <p>
         Don't have an account?
         <button type="button" onClick={tosignup}>
@@ -72,7 +75,8 @@ function SignupForm() {
     const tologin=()=>{
       navigate('/userlogin');
     }
-    const signup=()=>{
+    const signup=async(e)=>{
+      e.preventDefault();
       // Send a POST request to the server to signup
       axios
         .post('http://localhost:3001/signup', {name,email,password,cPassword,city,state,country,pinCode,phoneNumber})

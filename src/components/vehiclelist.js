@@ -39,24 +39,26 @@ function VehicleList() {
       <table border='1'>
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Description</th>
             <th>Image</th>
+            <th>Name</th>
+            <th>price</th>
+            <th>Description</th>
             <th>Available</th>
           </tr>
         </thead>
         <tbody>
           {vehicles.map((vehicle) => (
             <tr key={vehicle._id}>
-              <td>{vehicle.name}</td>
-              <td>{vehicle.description}</td>
               <td>
                 {vehicle.image && (
-                  <img src={`http://localhost:3001/${vehicle.image}`} 
+                  <img src={`http://localhost:3001/image/${vehicle.image}`} 
                   alt={`${vehicle.name}`}
-                  style={{ maxWidth: '100px' }} />
+                  style={{ Width: '100px' }} />
                 )}
               </td>
+              <td>{vehicle.name}</td>
+              <td>{vehicle.price}</td>
+              <td>{vehicle.description}</td>
               <td>{vehicle.noofvehicle}</td>
               <td>
                 <button onClick={() => deleteVehicle(vehicle._id)}>Delete</button>

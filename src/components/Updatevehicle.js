@@ -6,6 +6,7 @@ function UpdateVehicle({ vehicle, onClose }) {
   const [updatedData, setUpdatedData] = useState({
     name: vehicle.name,
     description: vehicle.description,
+    price:vehicle.price,
     noofvehicle: vehicle.noofvehicle,
   });
   
@@ -40,31 +41,40 @@ function UpdateVehicle({ vehicle, onClose }) {
       <h3>Update Vehicle</h3>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Name:</label>
+          <label>Name:</label><br />
           <input
             type="text"
             name="name"
             value={updatedData.name}
             onChange={handleInputChange}
-          />
+          /><br />
         </div>
         <div>
-          <label>Description:</label>
+          <label>Description:</label><br />
           <input
             type="text"
             name="description"
             value={updatedData.description}
             onChange={handleInputChange}
-          />
+          /><br />
         </div>
         <div>
-          <label>Available:</label>
+          <label>price:</label><br />
+          <input
+            type="text"
+            name="price"
+            value={updatedData.price}
+            onChange={handleInputChange}
+          /><br />
+        </div>
+        <div>
+          <label>Available:</label><br />
           <input
             type="number"
             name="noofvehicle"
             value={updatedData.noofvehicle}
             onChange={handleInputChange}
-          />
+          /><br />
         </div>
         <button type="submit">Save</button>
         <button type="button" onClick={onClose}>Cancel</button>

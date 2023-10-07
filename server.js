@@ -42,6 +42,7 @@ const UserSchema = new mongoose.Schema({
 const VehicleSchema =new mongoose.Schema({
   name: String,
   description: String,
+  price:String,
   image: String,
   noofvehicle: Number,
 })
@@ -62,15 +63,16 @@ const upload = multer({
 // Add a new vehicle to the database
 app.post('/addvehicle', upload.single('vimage'), async (req, res) => {
   try {
-    const { vname, vdescription, noofvehicle } = req.body;
+    const { vname, vdescription,vprice, noofvehicle } = req.body;
 
     // Construct the image path on your server
-    const vimagePath = req.file ? req.file.path : '';
+    const vimagePath = req.file.filename;
 
     // Create a new vehicle object
     const newVehicle = new Vehicle({
       name: vname,
       description: vdescription,
+      price:vprice,
       image: vimagePath,
       noofvehicle: noofvehicle,
     });
@@ -83,6 +85,14 @@ app.post('/addvehicle', upload.single('vimage'), async (req, res) => {
     console.error('Error adding vehicle:', error);
     res.status(500).json({ message: 'Error adding vehicle' });
   }
+});
+// Serve images
+app.get('/image/:filename', (req, res) => {
+  const { filename } = req.params;
+  console.log(filename);
+  const imagePath = path.join(__dirname, './uploads', filename);
+  console.log('Sending image:', imagePath);
+  res.sendFile(imagePath);
 });
 // Fetch all vehicles from the database
 app.get('/vehicles', async (req, res) => {
@@ -109,7 +119,7 @@ app.delete('/deletevehicle/:id', async (req, res) => {
 app.put('/updatevehicle/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, noofvehicle } = req.body;
+    const { name, description,price, noofvehicle } = req.body;
 
     // Find the vehicle by ID in the database
     const vehicle = await Vehicle.findById(id);
@@ -121,6 +131,7 @@ app.put('/updatevehicle/:id', async (req, res) => {
     // Update the vehicle properties
     vehicle.name = name;
     vehicle.description = description;
+    vehicle.price=price;
     vehicle.noofvehicle = noofvehicle;
 
     // Save the updated vehicle to the database
@@ -219,7 +230,7 @@ app.post('/signup', async (req, res) => {
   }
   try {
     // Create a new user object
-    const newUser = new User({name:name,email:email,password:password,city:city,state:state,country:country,pincode:pinCode,pphoneNumber,});
+    const newUser = new User({name:name,email:email,password:password,city:city,state:state,country:country,pincode:pinCode,phoneno:phoneNumber,});
     // Save the user to the database
     await newUser.save();
     res.json({ success: true, message: 'User registered successfully' });
