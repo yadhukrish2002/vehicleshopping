@@ -24,7 +24,7 @@ function Adminlogin() {
   };
   
     return (
-        <div>
+        <div className='container'>
       <h2>Admin Login</h2>
       <form onSubmit={Alogin}>
         <label>

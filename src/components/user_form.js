@@ -31,9 +31,9 @@ function LoginForm() {
   };
 
   return (
-    <div>
+    <div className='container'>
       <h2>User Login</h2>
-      <form onSubmit={login}>
+      <form onSubmit={login} className='login-form'>
         <label>
           Email:<br />
           <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
@@ -129,9 +129,9 @@ function SignupForm() {
     });
     };
     return (
-      <div>
+      <div className='container'>
         <h2>User Sign Up</h2>
-        <form>
+        <form className='signup-form'>
           <label>
             Email:<br /><input type="email" value={email} onChange={(e) => setEmail(e.target.value)}/>
           </label><br />
@@ -160,13 +160,14 @@ function SignupForm() {
               Phone number:<br /><input type="text" value={phoneNumber} onChange={(e) => setPhoneNumber(e.target.value)} />
               </label><br />
               {isPhoneOTPVisible ? (
-            <div>
+            <div className='phone-verification'>
             <label>Verification Code:</label><br />
             <input type="text" placeholder='enter code' value={verificationCode} onChange={(e) => setVerificationCode(e.target.value)} /><br />
             <button onClick={verifyPhoneNumber}>Verify Phone Number</button>
           </div>
         ) : (
-            <button onClick={sendVerificationCode}>Send Verification Code</button>
+          <div className='phone-verification'><button onClick={sendVerificationCode}>Send Verification Code</button></div>
+            
         )}
         <div>
           <p>{verificationStatus}</p>

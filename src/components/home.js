@@ -13,14 +13,22 @@ function Home(){
 
 
     return(
-        <>
-            <lebel>vehicles</lebel>
-            <button onClick={userlogin}>userlogin</button>
-            <button onClick={adminlogin}>adminlogin</button>
+        <div className="bd">
+        <table>
+            <tr>
+                <td><lebel>vehicles</lebel></td>
+                <td align="right">
+                    <button onClick={userlogin}>userlogin</button>
+                    <button onClick={adminlogin}>adminlogin</button>
+                </td>
+            </tr>
+        </table>
+            
+            
             <h1>SELECT YOUR OWN VEHICLE</h1>
             <p>Choose your own vehicle for better experence</p>
 
-        </>
+        </div>
     );
 }
 export default Home;
