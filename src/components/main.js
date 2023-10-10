@@ -6,6 +6,7 @@ import Adminlogin from "./admin_login";
 import UserDashBoard from "./userdashboard";
 import AdminDashBoard from "./admindashboard";
 import AddVehicle from "./addvehicle";
+import AdminProfile from "./adminprofile";
 
 function Main() {
   return (
@@ -18,6 +19,7 @@ function Main() {
         <Route path="/userdashboard" element={<UserDashBoard />} />
         <Route path="/admindashboard" element={<AdminDashBoard />} />
         <Route path="/addvehicle" element={<AddVehicle />} />
+        <Route path="/adminprofile" element={<AdminProfile />} />
       </Routes>
     </Router>
   );

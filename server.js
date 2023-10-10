@@ -46,10 +46,17 @@ const VehicleSchema =new mongoose.Schema({
   image: String,
   noofvehicle: Number,
 })
+const AdminSchema=new mongoose.Schema({
+  email:{ type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  name: { type: String },
+  photo:{ type:String},
+
+})
 //access collection from the database
 const User = mongoose.model('users', UserSchema);
 const Vehicle=mongoose.model('vehicles',VehicleSchema);
-
+const Admin=mongoose.model('admins',AdminSchema);
 // Set up storage for image uploads using Multer
 const storage = multer.diskStorage({
   destination: './uploads/',
@@ -60,6 +67,7 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage,
 });
+
 // Add a new vehicle to the database
 app.post('/addvehicle', upload.single('vimage'), async (req, res) => {
   try {
@@ -180,8 +188,14 @@ app.post('/verify-phone-number', (req, res) => {
 app.post('/adminlogin', async (req, res) => {
   const { email, password } = req.body;
   try {
+    // Find the user by email
+    const admin = await Admin.findOne({ email });
+    // If the user doesn't exist, return an error
+    if (!admin) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
     // Check if the provided password matches the stored password (plaintext comparison)
-    if (password === "admin" && email==="admin@gmail.com") {
+    if (password === admin.password) {
       // Passwords match; you can consider the user authenticated
       res.status(200).json({ message: 'Admin login successful' });
     } else {
@@ -189,10 +203,22 @@ app.post('/adminlogin', async (req, res) => {
       res.status(401).json({ message: 'Invalid credentials' });
     }
   } catch (error) {
-    console.error('Error during sign-in:', error);
+    console.error('Error during admin sign-in:', error);
     res.status(500).json({ message: 'Sign-in failed' });
   }
 });
+
+// Fetch all vehicles from the database
+app.get('/admins', async (req, res) => {
+  try {
+    const admin = await Admin.find();
+    res.status(200).json(admin);
+  } catch (error) {
+    console.error('Error fetching vehicles:', error);
+    res.status(500).json({ message: 'Error fetching vehicles' });
+  }
+});
+
 
 //api for user login
 app.post('/login', async (req, res) => {

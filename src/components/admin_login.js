@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 function Adminlogin() {
     const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [adminloginstatus,setAdminLoginStatus]=useState('');
   const navigate = useNavigate();
 
   const Alogin = async (e) => {
@@ -17,6 +18,7 @@ function Adminlogin() {
       } else {
         // Handle login failure
         console.error('adminLogin failed');
+        setAdminLoginStatus('admin login failed');
       }
     } catch (error) {
       console.error('Login error:', error);
@@ -39,6 +41,7 @@ function Adminlogin() {
         <br />
         <button type="submit">Login</button>
       </form>
+      <p>{adminloginstatus}</p>
     </div>
     );
 }

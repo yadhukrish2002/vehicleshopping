@@ -1,15 +1,20 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import VehicleList from './vehiclelist';
+import './home.css';
 
 function AdminDashboard() {
   const navigate = useNavigate();
   const addvehicle=()=>{
     navigate('/addvehicle');
   }
+  const adminprofile=()=>{
+    navigate('/adminprofile');
+  }
   return (
     <div>
-      <h1>Admin Dashboard</h1>
+      <lebel>Admin Dashboard</lebel>
+      <button onClick={adminprofile}>Admin profile</button><br />
       <button onClick={addvehicle}>add vehicle</button>
       <VehicleList />
     </div>
