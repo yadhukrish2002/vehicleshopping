@@ -37,7 +37,7 @@ function AdminProfile() {
                 />
               )}
             </div>
-            <label>{Admin.name}</label>
+            <label>{Admin.name}</label><br /><br /><br />
             <button onClick={() => updateprofile(Admin)}>Edit profile</button>
           </div>
         ))}
