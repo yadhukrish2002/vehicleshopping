@@ -58,6 +58,7 @@ const User = mongoose.model('users', UserSchema);
 const Vehicle=mongoose.model('vehicles',VehicleSchema);
 const Admin=mongoose.model('admins',AdminSchema);
 // Set up storage for image uploads using Multer
+
 const storage = multer.diskStorage({
   destination: './uploads/',
   filename: function (req, file, cb) {
@@ -216,6 +217,34 @@ app.get('/admins', async (req, res) => {
   } catch (error) {
     console.error('Error fetching vehicles:', error);
     res.status(500).json({ message: 'Error fetching vehicles' });
+  }
+});
+
+// Route to update an admin's profile
+app.put("/editprofile/:id", upload.single("photo"),async (req, res) => {
+  try{
+    const { id } = req.params;
+    const { name, email, password } = req.body;
+    const photopath =req.file.filename;
+    console.log(name,email,password,photopath);
+
+    const admin = await Admin.findById(id);
+    if (!Admin) {
+      return res.status(404).json({ message: 'Admin not found' });
+    }
+    // Update the Admin properties
+    admin.name = name;
+    admin.email = email;
+    admin.password=password;
+    admin.photo = photopath;
+
+    // Save the updated vehicle to the database
+    await admin.save();
+
+    res.status(200).json({ message: 'admin profile updated successfully' });
+  } catch (error) {
+    console.error('Error updating admin:', error);
+    res.status(500).json({ message: 'Error updating admin' });
   }
 });
 
