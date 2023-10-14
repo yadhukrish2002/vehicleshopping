@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { setphoneGV,getphoneGV } from '../globelV';
 
 function LoginForm() {
   const [email, setEmail] = useState('');
@@ -71,24 +72,31 @@ function SignupForm() {
     const [verificationCode, setVerificationCode] = useState('');
     const [verificationStatus, setVerificationStatus] = useState('');
     const [isPhoneOTPVisible, setIsPhoneOTPVisible] = useState(false);
+    const [status,setStatus]=useState('')
     const navigate = useNavigate();
     const tologin=()=>{
       navigate('/userlogin');
     }
     const signup=async(e)=>{
-      e.preventDefault();
-      // Send a POST request to the server to signup
-      axios
-        .post('http://localhost:3001/signup', {name,email,password,cPassword,city,state,country,pinCode,phoneNumber})
-        .then((response) => {
-          if (response.data.success) {
-            navigate('/userdashboard');
-          } else {
-          }
-        })
-        .catch((error) => {
-          console.error('signup error:', error);
-        });
+      if(name&&email&&password&&cPassword&&city&&state&&country&&pinCode&&phoneNumber&&getphoneGV())
+      {e.preventDefault();
+        // Send a POST request to the server to signup
+        axios
+          .post('http://localhost:3001/signup', {name,email,password,cPassword,city,state,country,pinCode,phoneNumber})
+          .then((response) => {
+            if (response.data.success) {
+              navigate('/userdashboard');
+            } else {
+            }
+          })
+          .catch((error) => {
+            console.error('signup error:', error);
+          });
+        }
+        else{
+          setStatus("all the fields are required !")
+        }
+      
     }
 
     const sendVerificationCode = () => {
@@ -117,7 +125,7 @@ function SignupForm() {
     .post('http://localhost:3001/verify-phone-number', { phoneNumber, verificationCode })
     .then((response) => {
       if (response.data.success) {
-        //setphoneGV(true);
+        setphoneGV(true);
         setVerificationStatus('Phone number verified! You are now authenticated.');
       } else {
         setVerificationStatus('Invalid verification code. Please try again.');
@@ -174,6 +182,9 @@ function SignupForm() {
         </div>
           <button type="submit" onClick={signup}>Sign Up</button>
         </form>
+        <p>
+          {status}
+        </p>
         <p>
           Already have an account?<button type="button" onClick={tologin}>Login</button>
         </p>

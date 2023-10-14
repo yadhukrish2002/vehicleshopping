@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import './vehiclelist.css';
+import { useNavigate } from 'react-router-dom';
 function UserDashBoard(){
-    const [vehicles, setVehicles] = useState([]);
+  const navigate = useNavigate();
+  const [vehicles, setVehicles] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortOrder, setSortOrder] = useState('asc'); // Default sorting order is ascending
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
+  };
+
+  const stripe = (vehicle)=>{
+    navigate('/stripe', { state: { vehicle } });
   };
 
   const handleSortOrderChange = (e) => {
@@ -75,7 +81,7 @@ function UserDashBoard(){
                     price<b>{vehicle.price}/-</b><br />
                     {vehicle.description}<br />
                     Available{vehicle.noofvehicle}<br />
-                    <button >book</button><br />
+                    <button onClick={() => stripe(vehicle)}>book</button><br />
                   </td>
                 </tr>
               ))}

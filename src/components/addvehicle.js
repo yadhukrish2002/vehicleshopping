@@ -47,7 +47,7 @@ function AddVehicle() {
   return (
     <div>
       <h2>Admin Dashboard</h2>
-      <div className="vehicle-form">
+      <div className="container">
         <h3>Add Vehicle</h3>
         <input
           type="text"

@@ -14,7 +14,7 @@ function AdminDashboard() {
   return (
     <div>
       <lebel>Admin Dashboard</lebel>
-      <button onClick={adminprofile}>Admin profile</button><br />
+      <button onClick={adminprofile}>Admin profile</button>
       <button onClick={addvehicle}>add vehicle</button>
       <VehicleList />
     </div>

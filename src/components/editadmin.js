@@ -42,7 +42,7 @@ function EditProfile({ Admin, onClose }) {
   };
 
   return (
-    <div>
+    <div className="container">
       <h3>Edit profile</h3>
       <form onSubmit={handleSubmit}>
         <div>

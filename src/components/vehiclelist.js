@@ -1,8 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import UpdateVehicle from './Updatevehicle';
+import './home.css'
 function VehicleList() {
   const [vehicles, setVehicles] = useState([]);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortOrder, setSortOrder] = useState('asc');
+  
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+  const handleSortOrderChange = (e) => {
+    setSortOrder(e.target.value);
+  };
+  // Function to filter and sort vehicles based on the search query and sorting order
+  const filteredAndSortedVehicles = vehicles
+    .filter((vehicle) => {
+      const regex = new RegExp(searchQuery, 'i'); // 'i' for case-insensitive search
+      return regex.test(vehicle.name);
+    })
+    .sort((a, b) => {
+      const priceA = a.price;
+      const priceB = b.price;
+
+      if (sortOrder === 'asc') {
+        return priceA - priceB;
+      } else if (sortOrder === 'desc') {
+        return priceB - priceA;
+      } else {
+        return 0;
+      }
+    });
 
   useEffect(() => {
     // Fetch vehicles from the backend when the component mounts
@@ -36,6 +64,19 @@ function VehicleList() {
   return (
     <div>
       <h3>Vehicle List</h3>
+      <div>
+        <input
+          className='field'
+          type="text"
+          placeholder="Search by vehicle name"
+          value={searchQuery}
+          onChange={handleSearchChange}
+        />
+        <select value={sortOrder} onChange={handleSortOrderChange} className='field'>
+          <option value="asc">Sort by Price (Low to High)</option>
+          <option value="desc">Sort by Price (High to Low)</option>
+        </select>
+        </div>
       <table border='1'>
         <thead>
           <tr>
@@ -47,7 +88,7 @@ function VehicleList() {
           </tr>
         </thead>
         <tbody>
-          {vehicles.map((vehicle) => (
+          {filteredAndSortedVehicles.map((vehicle) => (
             <tr key={vehicle._id}>
               <td>
                 {vehicle.image && (

@@ -1,7 +1,9 @@
 const express=require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const stripe=require('stripe')('sk_test_51NyUPwSIA5A0K9CNU9CAT2bgPqco5nJOsDla4JT21w5HUufi1tgiPtE2RH0hQdG39lpbPjIFWTa1aeLW9BsQ6xcI00291FX4Np')
 var mongoose=require('mongoose');
+const uuid=require('uuid').v4
 const multer = require('multer');
 const path = require('path');
 const otp=require('./phoneotp')
@@ -215,8 +217,8 @@ app.get('/admins', async (req, res) => {
     const admin = await Admin.find();
     res.status(200).json(admin);
   } catch (error) {
-    console.error('Error fetching vehicles:', error);
-    res.status(500).json({ message: 'Error fetching vehicles' });
+    console.error('Error fetching Admins:', error);
+    res.status(500).json({ message: 'Error fetching Admins' });
   }
 });
 
@@ -295,6 +297,10 @@ app.post('/signup', async (req, res) => {
   }
 });
 
+//payment
+app.post('/checkout',async(req,res)=>{
+  console.log(req.body)
+});
 
 
 

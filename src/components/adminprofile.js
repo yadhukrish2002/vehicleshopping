@@ -32,7 +32,7 @@ function AdminProfile() {
           <div key={Admin._id}>
             <div>
               {Admin.photo && (
-                <img src={`http://localhost:3001/image/${Admin.photo}`}
+                <img className="img" src={`http://localhost:3001/image/${Admin.photo}`}
                      alt={`${Admin.name}`}
                 />
               )}

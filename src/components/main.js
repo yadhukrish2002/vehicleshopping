@@ -7,6 +7,7 @@ import UserDashBoard from "./userdashboard";
 import AdminDashBoard from "./admindashboard";
 import AddVehicle from "./addvehicle";
 import AdminProfile from "./adminprofile";
+import Stripe from "./stripe";
 
 function Main() {
   return (
@@ -20,6 +21,7 @@ function Main() {
         <Route path="/admindashboard" element={<AdminDashBoard />} />
         <Route path="/addvehicle" element={<AddVehicle />} />
         <Route path="/adminprofile" element={<AdminProfile />} />
+        <Route path="/stripe" element={<Stripe />} />
       </Routes>
     </Router>
   );
